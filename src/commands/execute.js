@@ -28,13 +28,12 @@ class ExecuteCommand {
   
   async executeTypescript({ projectDir }) {
     const spinner = ora('Setting up Typescript...').start();
-    // await execPromise(`cd ${projectDir} && npm install --save typescript @types/node @types/react @types/react-dom @types/jest`);
     await this.replaceJSFilesWithTS({ projectDir });
     spinner.succeed('Typescript setup done.');
   }
 
   async executeCSSFramwWork({ selectedTemplate, cssFramework, projectDir, useTypescript }) {
-    const spinner = ora(`Setting up ${cssFramework}...`).start();
+    const spinner = ora(`Setting up ${displayEnums[cssFramework]}...`).start();
   
     const {
       command, templates= {},replace={},
@@ -43,7 +42,7 @@ class ExecuteCommand {
   
     await execPromise(`cd ${projectDir} && ${command}`, (err, _, stderr) => {
       if (err) {
-        console.error(`Error installing ${cssFramework}: ${stderr}`);
+        console.error(`Error installing ${displayEnums[cssFramework]}: ${stderr}`);
         return;
       }
       
@@ -115,10 +114,10 @@ class ExecuteCommand {
       await this.executeTypescript({projectDir});
     }
   
-    const spinner = ora(`Setting up ${selectedTemplate}...`).start();
+    const spinner = ora(`Setting up ${displayEnums[selectedTemplate]}...`).start();
     
     try {
-      await execPromise(`cd ${projectDir} && npm install ${init_packages.join(' ')} && ${useTypescript ? 'npm install --save typescript @types/node @types/react @types/react-dom @types/jest' : ''}`);
+      await execPromise(`cd ${projectDir} && npm install ${init_packages.join(' ')} ${useTypescript ? ' && npm install --save typescript @types/node @types/react @types/react-dom @types/jest' : ''}`);
       spinner.succeed(`${displayEnums[selectedTemplate]} setup done.`);
     } catch (err) {
       console.error(`Error installing ${selectedTemplate}: ${err.message}`);
